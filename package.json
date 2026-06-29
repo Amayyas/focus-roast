@@ -1,11 +1,12 @@
 {
   "name": "focus-roast",
   "version": "0.1.0",
-  "description": "Extension Chrome qui scanne vos onglets et fait roaster votre niveau de focus par Claude.",
+  "description": "Cross-browser extension that scans your tabs and lets Gemini rate (and gently roast) your focus.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:firefox": "npm run build && node scripts/build-firefox.mjs",
     "typecheck": "tsc -b --noEmit",
     "preview": "vite preview"
   },
