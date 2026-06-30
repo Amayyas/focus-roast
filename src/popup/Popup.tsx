@@ -53,11 +53,7 @@ export function Popup() {
     <div className="popup">
       <header className="popup__header">
         <h1 className="popup__title">Focus Roast</h1>
-        <button
-          className="iconbtn"
-          title="Edit API key"
-          onClick={() => setEditingKey(true)}
-        >
+        <button className="iconbtn" title="Edit API key" onClick={() => setEditingKey(true)}>
           ⚙
         </button>
       </header>
@@ -72,16 +68,18 @@ export function Popup() {
           />
         </>
       ) : (
-        <p className="popup__empty">
-          No scan yet. Run one to discover your score.
-        </p>
+        <p className="popup__empty">No scan yet. Run one to discover your score.</p>
       )}
 
       {lastError && <p className="popup__error">{lastError}</p>}
 
       <HistoryChart history={history} />
 
-      <button className="btn btn--primary btn--block" disabled={scanning} onClick={() => void handleScan()}>
+      <button
+        className="btn btn--primary btn--block"
+        disabled={scanning}
+        onClick={() => void handleScan()}
+      >
         {scanning ? "Scanning…" : "Scan now"}
       </button>
     </div>

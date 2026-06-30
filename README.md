@@ -206,13 +206,13 @@ change provider or key at any time via the ⚙ icon in the popup.
 
 ### Requested permissions
 
-| Permission | Why |
-| ---------- | --- |
-| `tabs` | Read tab titles and URLs to extract the domain. |
-| `storage` | Persist the provider config, the last result and the history. |
-| `alarms` | Schedule the periodic scan reliably under MV3. |
-| `host_permissions: https://generativelanguage.googleapis.com/*` | Call the Gemini API from the service worker. |
-| `optional_host_permissions` | Granted on demand for the OpenAI-compatible endpoint you configure (only that origin). |
+| Permission                                                      | Why                                                                                    |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `tabs`                                                          | Read tab titles and URLs to extract the domain.                                        |
+| `storage`                                                       | Persist the provider config, the last result and the history.                          |
+| `alarms`                                                        | Schedule the periodic scan reliably under MV3.                                         |
+| `host_permissions: https://generativelanguage.googleapis.com/*` | Call the Gemini API from the service worker.                                           |
+| `optional_host_permissions`                                     | Granted on demand for the OpenAI-compatible endpoint you configure (only that origin). |
 
 ---
 
@@ -227,9 +227,9 @@ change provider or key at any time via the ⚙ icon in the popup.
 
 ## Scripts
 
-| Command | Effect |
-| ------- | ------ |
-| `npm run dev` | Build in watch mode (MV3 hot-reload). |
-| `npm run build` | Typecheck (`tsc -b`) + production build into `dist/` (Chrome). |
+| Command                 | Effect                                                           |
+| ----------------------- | ---------------------------------------------------------------- |
+| `npm run dev`           | Build in watch mode (MV3 hot-reload).                            |
+| `npm run build`         | Typecheck (`tsc -b`) + production build into `dist/` (Chrome).   |
 | `npm run build:firefox` | Build, then emit a Firefox-adapted package into `dist-firefox/`. |
-| `npm run typecheck` | Type checking only. |
+| `npm run typecheck`     | Type checking only.                                              |

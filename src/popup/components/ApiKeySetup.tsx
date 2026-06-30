@@ -54,8 +54,7 @@ export function ApiKeySetup({ initialConfig = null, onSaved, onCancel }: ApiKeyS
     <div className="setup">
       <h1 className="setup__title">Setup</h1>
       <p className="setup__desc">
-        Choose an AI provider and enter its API key. It is stored only locally in
-        your browser.
+        Choose an AI provider and enter its API key. It is stored only locally in your browser.
       </p>
 
       <select

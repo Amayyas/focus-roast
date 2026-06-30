@@ -13,14 +13,7 @@ import { Line } from "react-chartjs-2";
 import { buildBuckets } from "../../lib/focusScore";
 import type { ScoreHistory } from "../../types";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip);
 
 interface HistoryChartProps {
   history: ScoreHistory;
@@ -30,8 +23,7 @@ interface HistoryChartProps {
 // So we pick real colors based on the system light/dark theme.
 function chartOptions(): ChartOptions<"line"> {
   const dark =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
+    typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
   const tickColor = dark ? "#9ca3af" : "#6b7280";
   const gridColor = dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.1)";
 
@@ -59,11 +51,7 @@ export function HistoryChart({ history }: HistoryChartProps) {
   const buckets = buildBuckets(history);
 
   if (buckets.length < 2) {
-    return (
-      <p className="chart__empty">
-        Not enough data today yet to draw a chart.
-      </p>
-    );
+    return <p className="chart__empty">Not enough data today yet to draw a chart.</p>;
   }
 
   const data: ChartData<"line"> = {

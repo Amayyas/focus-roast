@@ -24,7 +24,12 @@ export async function getStorage(): Promise<StorageShape> {
     await chrome.storage.local.remove("apiKey");
   }
 
-  return { provider, history: data.history, lastResult: data.lastResult, lastError: data.lastError };
+  return {
+    provider,
+    history: data.history,
+    lastResult: data.lastResult,
+    lastError: data.lastError,
+  };
 }
 
 export async function getProvider(): Promise<ProviderConfig | null> {
