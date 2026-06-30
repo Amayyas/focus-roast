@@ -35,11 +35,11 @@ export function Popup() {
     return <div className="popup popup--loading">Loading…</div>;
   }
 
-  if (storage.apiKey === "" || editingKey) {
+  if (storage.provider === null || editingKey) {
     return (
       <div className="popup">
         <ApiKeySetup
-          initialKey={storage.apiKey}
+          initialConfig={storage.provider}
           onSaved={() => setEditingKey(false)}
           onCancel={editingKey ? () => setEditingKey(false) : undefined}
         />

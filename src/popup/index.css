@@ -217,12 +217,17 @@ body {
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--fg);
+  width: 100%;
 }
 
 .setup__hint {
   font-size: 12px;
   color: var(--muted);
   margin: 0;
+}
+
+.setup__link {
+  color: var(--primary);
 }
 
 .setup__actions {

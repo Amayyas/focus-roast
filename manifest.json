@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Focus Roast",
   "version": "0.1.0",
-  "description": "Scans your tabs and lets Gemini rate (and gently roast) your focus.",
+  "description": "Scans your tabs and lets an AI rate (and gently roast) your focus.",
   "action": {
     "default_popup": "src/popup/index.html",
     "default_title": "Focus Roast"
@@ -12,5 +12,6 @@
     "type": "module"
   },
   "permissions": ["tabs", "storage", "alarms"],
-  "host_permissions": ["https://generativelanguage.googleapis.com/*"]
+  "host_permissions": ["https://generativelanguage.googleapis.com/*"],
+  "optional_host_permissions": ["https://*/*", "http://localhost/*", "http://127.0.0.1/*"]
 }

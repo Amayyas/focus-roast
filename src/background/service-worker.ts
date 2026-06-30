@@ -1,7 +1,7 @@
 import { collectTabs } from "../lib/tabAnalyzer";
-import { analyzeFocus, AiClientError } from "../lib/aiClient";
+import { analyzeFocus, AiClientError } from "../lib/providers";
 import { smoothScore } from "../lib/focusScore";
-import { appendResult, getApiKey, getStorage, setError } from "../lib/storage";
+import { appendResult, getProvider, getStorage, setError } from "../lib/storage";
 import type { FocusResult, RuntimeRequest, RuntimeResponse } from "../types";
 
 const ALARM_NAME = "focus-scan";
@@ -20,9 +20,9 @@ async function runScan(): Promise<void> {
   }
   scanInProgress = true;
   try {
-    const apiKey = await getApiKey();
-    if (apiKey === "") {
-      // No key configured: the popup will show the setup screen.
+    const provider = await getProvider();
+    if (provider === null) {
+      // No provider configured: the popup will show the setup screen.
       return;
     }
 
@@ -33,7 +33,7 @@ async function runScan(): Promise<void> {
     }
 
     const { history } = await getStorage();
-    const ai = await analyzeFocus(tabs, apiKey);
+    const ai = await analyzeFocus(tabs, provider);
 
     const result: FocusResult = {
       score: smoothScore(ai.score, history),

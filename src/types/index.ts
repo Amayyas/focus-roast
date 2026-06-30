@@ -8,6 +8,22 @@ export interface TabInfo {
   domain: string;
 }
 
+/** Supported AI provider families. */
+export type ProviderId = "gemini" | "openai";
+
+/**
+ * AI provider configuration chosen by the user.
+ * `baseUrl` / `model` are only relevant for the OpenAI-compatible family.
+ */
+export interface ProviderConfig {
+  id: ProviderId;
+  apiKey: string;
+  /** Custom endpoint for OpenAI-compatible servers (OpenRouter, Groq, Ollama…). */
+  baseUrl?: string;
+  /** Model name (provider-specific; each provider has a sensible default). */
+  model?: string;
+}
+
 /** Result of a focus analysis produced by the LLM, timestamped. */
 export interface FocusResult {
   /** Smoothed score shown to the user (0-100). */
@@ -27,7 +43,7 @@ export type ScoreHistory = FocusResult[];
 
 /** Shape persisted in chrome.storage.local. */
 export interface StorageShape {
-  apiKey: string;
+  provider: ProviderConfig | null;
   history: ScoreHistory;
   lastResult: FocusResult | null;
   lastError: string | null;

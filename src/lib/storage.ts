@@ -1,25 +1,39 @@
-import type { FocusResult, StorageShape } from "../types";
+import type { FocusResult, ProviderConfig, StorageShape } from "../types";
 
 const DEFAULTS: StorageShape = {
-  apiKey: "",
+  provider: null,
   history: [],
   lastResult: null,
   lastError: null,
 };
 
-/** Reads the entire persisted state, with default values. */
+/**
+ * Reads the entire persisted state, with default values. Transparently migrates
+ * the legacy `apiKey` string (Gemini-only) to the new `provider` object.
+ */
 export async function getStorage(): Promise<StorageShape> {
-  const data = await chrome.storage.local.get(DEFAULTS);
-  return data as StorageShape;
+  const data = (await chrome.storage.local.get({
+    ...DEFAULTS,
+    apiKey: "", // legacy field, kept only for migration
+  })) as StorageShape & { apiKey?: string };
+
+  let provider = data.provider;
+  if (provider === null && (data.apiKey ?? "") !== "") {
+    provider = { id: "gemini", apiKey: data.apiKey ?? "" };
+    await chrome.storage.local.set({ provider });
+    await chrome.storage.local.remove("apiKey");
+  }
+
+  return { provider, history: data.history, lastResult: data.lastResult, lastError: data.lastError };
 }
 
-export async function getApiKey(): Promise<string> {
-  const { apiKey } = await chrome.storage.local.get({ apiKey: DEFAULTS.apiKey });
-  return apiKey as string;
+export async function getProvider(): Promise<ProviderConfig | null> {
+  const { provider } = await getStorage();
+  return provider;
 }
 
-export async function setApiKey(apiKey: string): Promise<void> {
-  await chrome.storage.local.set({ apiKey: apiKey.trim() });
+export async function setProvider(config: ProviderConfig): Promise<void> {
+  await chrome.storage.local.set({ provider: { ...config, apiKey: config.apiKey.trim() } });
 }
 
 /** True if two timestamps fall on the same local calendar day. */
