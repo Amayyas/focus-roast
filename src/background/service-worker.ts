@@ -46,9 +46,7 @@ async function runScan(): Promise<void> {
     await appendResult(result);
   } catch (error) {
     const message =
-      error instanceof AiClientError
-        ? error.message
-        : "Unexpected error during the scan.";
+      error instanceof AiClientError ? error.message : "Unexpected error during the scan.";
     await setError(message);
   } finally {
     scanInProgress = false;
