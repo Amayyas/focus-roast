@@ -1,8 +1,9 @@
 # Focus Roast
 
 Browser extension (Manifest V3) that scans your open tabs at regular intervals,
-sends their **titles + domains** (never the full URLs) to **Gemini** (Google
-API), and shows:
+sends their **titles + domains** (never the full URLs) to **the AI provider of
+your choice** (Gemini, or any OpenAI-compatible API — OpenAI, OpenRouter, Groq,
+Ollama…), and shows:
 
 - a **focus score** (0-100) with a circular gauge and color code,
 - a **roast**: a blunt and funny — but always good-natured — comment about what
@@ -13,8 +14,9 @@ Works on **Chrome, Edge, Brave, Opera** (same build), **Firefox** (dedicated
 build) and **Safari** (via Apple's converter). See
 [Installation](#installation-developer-mode).
 
-Everything is **100% local**: no data is sent anywhere other than the Gemini
-API, and your API key never leaves your browser (`chrome.storage.local`).
+Everything is **100% local**: no data is sent anywhere other than the AI
+endpoint you configure, and your API key never leaves your browser
+(`chrome.storage.local`).
 
 ---
 
@@ -40,8 +42,10 @@ its categories, and the **chart** of the score evolution over the day.
 - **chrome.storage.local** for persistence (no backend)
 - **chrome.alarms** for the periodic scan (survives service worker sleep, unlike
   `setInterval`)
-- **Google Gemini API** (`gemini-2.5-flash`, structured JSON output via
-  `responseSchema`) for scoring + roast, called from the service worker
+- **Pluggable AI providers** (`src/lib/providers/`): **Google Gemini**
+  (`gemini-2.5-flash`, structured output via `responseSchema`) and any
+  **OpenAI-compatible** Chat Completions endpoint (OpenAI, OpenRouter, Groq,
+  Ollama…), called from the service worker
 
 ### Architecture
 
@@ -51,7 +55,11 @@ src/
 │  └─ service-worker.ts   # alarm, scan, AI orchestration, storage, manual scan
 ├─ lib/
 │  ├─ tabAnalyzer.ts      # tab reading + cleaning + filtering
-│  ├─ aiClient.ts         # Gemini API call + Zod JSON validation
+│  ├─ providers/          # pluggable AI backends
+│  │  ├─ shared.ts        # prompt, Zod schema, JSON parsing, error mapping
+│  │  ├─ gemini.ts        # Google Gemini
+│  │  ├─ openai.ts        # OpenAI-compatible Chat Completions
+│  │  └─ index.ts         # registry, dispatcher, UI metadata, host permission
 │  ├─ focusScore.ts       # score smoothing (moving average) + chart buckets
 │  └─ storage.ts          # typed access to chrome.storage.local (+ daily reset)
 ├─ popup/
@@ -63,7 +71,7 @@ src/
 │     ├─ ScoreGauge.tsx   # circular SVG gauge
 │     ├─ RoastDisplay.tsx # roast + categories + time
 │     ├─ HistoryChart.tsx # score chart over the day
-│     └─ ApiKeySetup.tsx  # API key entry / editing
+│     └─ ApiKeySetup.tsx  # provider + API key entry / editing
 └─ types/
    └─ index.ts            # shared types
 ```
@@ -156,15 +164,30 @@ be done on Linux/Windows).
 
 ## API key configuration
 
-On first launch, the popup shows a setup screen.
+On first launch, the popup shows a setup screen. Pick a provider, paste your key,
+and click **Save**.
 
-1. Get an API key from
-   [Google AI Studio](https://aistudio.google.com/app/apikey) (it starts with
-   `AIza...`).
-2. Paste it into the field and click **Save**.
+### Google Gemini (default)
+
+Get a key from [Google AI Studio](https://aistudio.google.com/app/apikey) (it
+starts with `AIza...`).
+
+### OpenAI-compatible (OpenAI, OpenRouter, Groq, Ollama…)
+
+Select **OpenAI-compatible** and fill in:
+
+- **API key** — from your provider (e.g. [OpenAI](https://platform.openai.com/api-keys)).
+- **Base URL** — defaults to `https://api.openai.com/v1`. Examples:
+  `https://openrouter.ai/api/v1`, `https://api.groq.com/openai/v1`,
+  `http://localhost:11434/v1` (Ollama).
+- **Model** — e.g. `gpt-4o-mini`, `llama-3.1-8b-instant`, `llama3.2` (Ollama).
+
+The first time you point at a non-Gemini endpoint, the browser asks for
+permission to reach that specific origin (requested at save time, so only the
+endpoint you actually use is granted).
 
 The key is stored **only** in `chrome.storage.local` (on your machine). You can
-change it at any time via the ⚙ icon in the popup.
+change provider or key at any time via the ⚙ icon in the popup.
 
 ---
 
@@ -186,16 +209,17 @@ change it at any time via the ⚙ icon in the popup.
 | Permission | Why |
 | ---------- | --- |
 | `tabs` | Read tab titles and URLs to extract the domain. |
-| `storage` | Persist the API key, the last result and the history. |
+| `storage` | Persist the provider config, the last result and the history. |
 | `alarms` | Schedule the periodic scan reliably under MV3. |
 | `host_permissions: https://generativelanguage.googleapis.com/*` | Call the Gemini API from the service worker. |
+| `optional_host_permissions` | Granted on demand for the OpenAI-compatible endpoint you configure (only that origin). |
 
 ---
 
 ## Privacy
 
-- No backend, no third-party server: the only network requests go to
-  `generativelanguage.googleapis.com`.
+- No backend, no third-party server: the only network requests go to the AI
+  endpoint you configure (Gemini by default).
 - No full URL is transmitted — only titles and domains.
 - The API key and history stay local and are never exported.
 
