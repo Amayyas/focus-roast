@@ -13,6 +13,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "knip": "knip",
+    "check:version": "node scripts/check-version.mjs",
+    "check:size": "node scripts/check-bundle-size.mjs",
+    "lint:ext": "addons-linter dist-firefox",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -25,6 +28,7 @@
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",
     "@eslint/js": "^9.39.4",
+    "addons-linter": "^7.20.0",
     "@types/chrome": "^0.0.270",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",

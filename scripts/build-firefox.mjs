@@ -33,7 +33,10 @@ manifest.background = {
 manifest.browser_specific_settings = {
   gecko: {
     id: "focus-roast@amayyas",
-    strict_min_version: "121.0",
+    // 128 is the first release that supports "optional_host_permissions"
+    // (used for the runtime provider host grant); anything lower is rejected
+    // by addons-linter and would break the permission request at runtime.
+    strict_min_version: "128.0",
   },
 };
 

@@ -1,0 +1,37 @@
+name: Extension
+
+# Extension-specific checks that go beyond a plain build:
+#   - version stays in sync between package.json and manifest.json,
+#   - the built bundle stays within its size budget,
+#   - the Firefox package passes Mozilla's addons-linter (0 errors required).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: extension-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Version consistency
+        run: npm run check:version
+      - name: Build (Chrome + Firefox)
+        run: npm run build:firefox
+      - name: Bundle size budget
+        run: npm run check:size
+      - name: addons-linter (Firefox package)
+        run: npm run lint:ext
