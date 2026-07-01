@@ -1,0 +1,41 @@
+name: CodeQL
+
+# Static analysis for security vulnerabilities in the JS/TS source.
+# Results appear under the repo's Security > Code scanning tab.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "27 3 * * 1" # weekly, Monday 03:27 UTC
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write # upload CodeQL results
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@9e8d0789d4a0fa9ceb6b1738f7e269594bdd67f0 # v3.28.9
+        with:
+          languages: ${{ matrix.language }}
+          # No compilation needed for JS/TS; analyze the source directly.
+          build-mode: none
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@9e8d0789d4a0fa9ceb6b1738f7e269594bdd67f0 # v3.28.9
+        with:
+          category: "/language:${{ matrix.language }}"

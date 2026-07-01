@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # npm dependencies. Minor/patch bumps are grouped to cut PR noise; majors
+  # come as individual PRs since they may carry breaking changes.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      production:
+        dependency-type: "production"
+        update-types: ["minor", "patch"]
+      development:
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
+
+  # Keep the SHA-pinned GitHub Actions up to date (Dependabot bumps the pin and
+  # updates the version comment).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]

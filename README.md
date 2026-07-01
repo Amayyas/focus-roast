@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/Amayyas/focus-roast/actions/workflows/ci.yml/badge.svg)](https://github.com/Amayyas/focus-roast/actions/workflows/ci.yml)
 [![Extension](https://github.com/Amayyas/focus-roast/actions/workflows/extension.yml/badge.svg)](https://github.com/Amayyas/focus-roast/actions/workflows/extension.yml)
+[![CodeQL](https://github.com/Amayyas/focus-roast/actions/workflows/codeql.yml/badge.svg)](https://github.com/Amayyas/focus-roast/actions/workflows/codeql.yml)
 
 Browser extension (Manifest V3) that scans your open tabs at regular intervals,
 sends their **titles + domains** (never the full URLs) to **the AI provider of
