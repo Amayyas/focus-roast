@@ -237,3 +237,20 @@ change provider or key at any time via the ⚙ icon in the popup.
 | `npm run build`         | Typecheck (`tsc -b`) + production build into `dist/` (Chrome).   |
 | `npm run build:firefox` | Build, then emit a Firefox-adapted package into `dist-firefox/`. |
 | `npm run typecheck`     | Type checking only.                                              |
+| `npm run package`       | Build both targets and zip them (Chrome + Firefox) at the root.  |
+
+## Releases
+
+Pre-built, ready-to-install packages for each version are attached to every
+[GitHub Release](../../releases): `focus-roast-chrome-v<version>.zip` (Chrome /
+Edge / Brave / Opera) and `focus-roast-firefox-v<version>.zip`.
+
+Releases are automated: pushing a `v<version>` tag (matching `package.json`)
+runs the [release workflow](.github/workflows/release.yml), which builds both
+packages, zips them and publishes a Release with auto-generated notes.
+
+```bash
+# cut a release once package.json + manifest.json are on the new version
+git tag v0.2.0
+git push origin v0.2.0
+```
