@@ -1,0 +1,56 @@
+name: Release Please
+
+# Automated versioning + changelog. As Conventional-Commit changes land on
+# main, release-please maintains a "release" PR that bumps the version
+# (package.json + manifest.json) and updates CHANGELOG.md. Merging that PR tags
+# the version and creates a GitHub Release; this workflow then builds the
+# browser packages and attaches them to that Release.
+#
+# The build/upload runs in this same workflow (not a separate one triggered by
+# the release) because releases created with GITHUB_TOKEN don't trigger further
+# workflow runs.
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write # create the release + tag
+  pull-requests: write # open/update the release PR
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4.4.0
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      # The steps below only run when the release PR was just merged.
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        run: npm ci
+      - name: Build + package (Chrome + Firefox zips)
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        run: npm run package
+      - name: Attach zips to the release
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ steps.release.outputs.tag_name }}" \
+            focus-roast-chrome-*.zip \
+            focus-roast-firefox-*.zip \
+            --clobber

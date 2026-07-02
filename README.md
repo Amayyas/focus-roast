@@ -241,16 +241,20 @@ change provider or key at any time via the ⚙ icon in the popup.
 
 ## Releases
 
-Pre-built, ready-to-install packages for each version are attached to every
-[GitHub Release](../../releases): `focus-roast-chrome-v<version>.zip` (Chrome /
-Edge / Brave / Opera) and `focus-roast-firefox-v<version>.zip`.
+Versioning and releases are automated with
+[release-please](https://github.com/googleapis/release-please). As
+Conventional-Commit changes (`feat:`, `fix:`, …) land on `main`, release-please
+keeps a **release pull request** up to date that bumps the version in
+`package.json` and `manifest.json` and updates `CHANGELOG.md`.
 
-Releases are automated: pushing a `v<version>` tag (matching `package.json`)
-runs the [release workflow](.github/workflows/release.yml), which builds both
-packages, zips them and publishes a Release with auto-generated notes.
+Merging that release PR (see
+[the workflow](.github/workflows/release-please.yml)):
 
-```bash
-# cut a release once package.json + manifest.json are on the new version
-git tag v0.2.0
-git push origin v0.2.0
-```
+1. tags the version and creates a [GitHub Release](../../releases) with the
+   changelog notes;
+2. builds both browser packages and attaches
+   `focus-roast-chrome-v<version>.zip` (Chrome / Edge / Brave / Opera) and
+   `focus-roast-firefox-v<version>.zip`.
+
+So every version stays downloadable and installable without a local build. To
+preview the zips locally, run `npm run package`.
