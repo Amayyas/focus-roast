@@ -1,6 +1,7 @@
 node_modules
 dist
 dist-firefox
+*.zip
 *.local
 *.tsbuildinfo
 .DS_Store

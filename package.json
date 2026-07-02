@@ -16,6 +16,7 @@
     "check:version": "node scripts/check-version.mjs",
     "check:size": "node scripts/check-bundle-size.mjs",
     "lint:ext": "addons-linter dist-firefox",
+    "package": "npm run build:firefox && node scripts/package.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
